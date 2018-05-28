@@ -4,8 +4,10 @@ import { check } from 'meteor/check';
 
 
 export const Notes = new Mongo.Collection('notes');
+export const Profile = new Mongo.Collection('profile');
 
 Meteor.methods({
+    // NOTES
     'notes.insert'(text){
         check(text, String);
         
@@ -32,6 +34,29 @@ Meteor.methods({
         }
         
         Notes.remove(note._id);
+        return true;
+    },
+
+    // PROFILE
+    'profile.insert'(username,img_profile,bg,prefs){
+        check(username, String);
+        check(img_profile, String);
+        check(bg, {
+            file: String,
+            type: Match.OneOf('image','video')
+        }),
+        check(prefs,{
+            mainColor: String,
+            altColor: String
+        })
+        
+        Profile.insert({
+            username,
+            img_profile,
+            bg,
+            prefs,
+            createdAt: new Date()
+        });
         return true;
     }
 })

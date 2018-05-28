@@ -1,50 +1,57 @@
 import { Template } from 'meteor/templating';
-import { Notes } from '../lib/collections.js'; 
+import { BlazeLayout } from 'meteor/kadira:blaze-layout';
+import { Notes, Profile } from '../lib/collections.js'; 
 import { Accounts } from 'meteor/accounts-base';
 
-// Accounts condig
+// Accounts config
 Accounts.ui.config({
   passwordSignupFields:'USERNAME_ONLY'
 });
 
 import './main.html';
 
-Template.body.helpers({
-  
-  notes(){
-    return Notes.find({});
+
+Template.mainpage.helpers({
+  user : JSON.parse(localStorage.getItem('user')) || {},
+  users(){
+    return Profile.find({});  
   },
   
 });
 
-Template.add.events({
-  'submit .add-form':function(event){
-    event.preventDefault();
-    
-    // GET input value
-    const target = event.target;
-    const text = target.text.value;
-    
-    // Insert note into collection
-    Meteor.call('notes.insert', text,(err, result)=>{
-      console.log(err);
-      console.log(result);
-    }); 
-    
-    // Clear the form
-    target.text.value = '';
-    
-    // Close the modal
-    $('#addModal').modal('close');
-    
-    return false;
-  },
-  
-});
-
-Template.note.events({
-  'click .delete-note':function(){
-    Meteor.call('notes.remove',this);
+Template.mainpage.events({
+  'click .unset-user':function(){
+    localStorage.removeItem('user');
+    BlazeLayout.reset();
+    BlazeLayout.render('layout', {main:'chosepage'});
     return false;
   }
 });
+
+Template.chosepage.onRendered(function(){
+  $('body').addClass('animated bounceInLeft');
+});
+
+Template.chosepage.helpers({
+  users(){
+    return Profile.find({});  
+  },
+});
+
+Template.choseuser.events({
+  'click .select-user':function(){
+    let user = JSON.stringify(this);
+    localStorage.setItem('user',user);
+    BlazeLayout.reset(); // this will remove the current template.
+    BlazeLayout.render('layout', {main:'mainpage'}) // rerender
+    return false;
+  }
+});
+
+// INIT
+if(localStorage.getItem('user')){
+  BlazeLayout.render('layout', {main:'mainpage'});
+}else{
+  BlazeLayout.render('layout', {main:'chosepage'});
+  
+}
