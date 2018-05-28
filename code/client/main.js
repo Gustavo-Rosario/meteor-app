@@ -12,7 +12,9 @@ import './main.html';
 
 
 Template.mainpage.helpers({
-  user : JSON.parse(localStorage.getItem('user')) || {},
+  user(){
+    return JSON.parse(localStorage.getItem('user')) || {};
+  },
   users(){
     return Profile.find({});  
   },
