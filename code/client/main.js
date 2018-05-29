@@ -67,8 +67,8 @@ Template.bgopt.events({
     let $figure = ( $(event.target).hasClass("opt-bg") ) ? $(event.target) : $(event.target).parent();
     $('.checked').remove();
     $figure.append(`<a class="btn-floating checked green white-text animated zoomIn">
-                              <i class="material-icons">check</i>
-                            </a>`);
+                      <i class="material-icons">check</i>
+                    </a>`);
     let file = $figure.find("img").prop("src");
     $(".bg-app img").prop("src",file);
     return false;
@@ -78,6 +78,32 @@ Template.bgopt.events({
     Meteor.sleep(500).then(()=>{
       BlazeLayout.reset(); // this will remove the current template.
       BlazeLayout.render('layout', {main:'mainpage'}) // rerender
+    });
+    return false;
+  },
+  'click .bgopt-ok':function(){
+    let $figure = $('.checked').parent();
+    let file = $figure.data('file');
+    let type = $figure.data('type');
+    let user = JSON.parse(localStorage.getItem('user'));
+    user.bg = {
+      file:file,
+      type:type
+    };
+    console.log(user._id);
+    Meteor.call('profile.update', user._id, {
+      bg:{
+      file:file,
+      type:type
+    }}, (error, result)=>{
+      if(error)
+        console.log(error);
+      localStorage.setItem('user', JSON.stringify(user));
+      $('.opt').addClass('animated slideOutRight');
+      Meteor.sleep(500).then(()=>{
+        BlazeLayout.reset(); // this will remove the current template.
+        BlazeLayout.render('layout', {main:'mainpage'}) // rerender
+      });
     });
     return false;
   }

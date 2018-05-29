@@ -59,5 +59,14 @@ Meteor.methods({
             createdAt: new Date()
         });
         return true;
+    },
+    'profile.update'(id, user ){
+        const _id = new Meteor.Collection.ObjectID(id._str);
+        Profile.update({
+            _id: _id
+        }, {
+            $set: user
+        });
+        return true;
     }
 })
