@@ -5,6 +5,7 @@ import { check } from 'meteor/check';
 
 export const Notes = new Mongo.Collection('notes');
 export const Profile = new Mongo.Collection('profile');
+export const Bg = new Mongo.Collection('bg');
 
 Meteor.methods({
     // NOTES

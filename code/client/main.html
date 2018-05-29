@@ -4,6 +4,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <title>Code</title>
     <style>
+      body{
+        overflow-y: hidden; 
+      }
       .cover{
         width: 100%;
         height: 100%;
@@ -23,49 +26,124 @@
       .unset-user{
         cursor: pointer;
       }
+      
+      .config-btn{
+        width: 56px;
+        height: 56px;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+      }
+      
+      .user-img{
+        position: relative;
+        width: 100%;
+        margin: 0;
+      }
+      
+      .user-img > img{
+        width: 80%;
+        height: 17rem;
+        margin: 10% 10% 0 10%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      
+      .user-img figcaption{
+        margin-top: -12px;
+        font-size: 1.5rem;
+        font-weight: 500;
+      } 
+      
+      .user-view{
+        padding: 0 !important;
+      }
+      
+      .opt{
+        position: fixed;
+        width: calc(100% - 310px);
+        right: 0;
+        top: 0;
+        margin: 0;
+        height: 100%;
+        height: -moz-calc(100%);
+        padding-bottom: 60px;
+        background-color: #fff;
+        z-index: 999;
+        overflow: hidden;
+        -webkit-animation-duration: .2s;
+      }
+      .opt-bg{
+        cursor: pointer;
+      }
+      
+      .title{
+        font-size: 2em;
+      }
+      .opt-bg{
+        position: relative;
+        /* HOVER OFF */
+        transform: scale(1);
+        transition: transform .1s;
+      }
+      
+      .opt-bg:hover{
+        transform: scale(1.2);
+        transition: .3s;
+      }
+      
+      .opt-bg
+      
+      .spin{
+        /* HOVER OFF */
+        transform: rotate(-90deg);
+        transition: transform .5s;
+      }
+      .spin:hover{
+        transform: rotate(90deg);
+        transition: .5s;
+      }
+      .scroll-bg{
+        position: relative;
+        width: 100%;
+        height: 70vh;
+        overflow-y: auto;
+      }
+      
+      .opt-btn{
+        width: 25%;
+        margin: 20px 35%;
+        text-align: center;
+      }
+      
+      .checked{
+        position: absolute;
+        bottom: 15px;
+        right: -12px;
+        -webkit-animation-duration: .5s;
+      }
+      
     </style>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </head>
   <body>
     {{> Template.dynamic template=main}}
+    <!-- Options -->
+    {{> Template.dynamic template=options}}
     <script type="text/javascript">
       $(document).ready(function(){
         $('.modal').modal();
-        $(".button-collapse").sideNav();
+        $(".button-collapse").sideNav({
+          closeOnClick: true
+        });
       });
     </script>
   </body>
 </template>
 
-<template name="sidenav">
-  <ul id="slide-out" class="side-nav">
-    <li>
-      <div class="user-view">
-        <div class="background">
-          <img class="cover" src="https://i.imgur.com/RRkBBD6.jpg">
-        </div>
-        <a href="#!user"><img class="circle" src="https://i.pinimg.com/originals/0e/8d/2c/0e8d2cf4772737c7be10098583a7717a.jpg"></a>
-        <a href="#!name"><span class="white-text name">John Doe</span></a>
-        <a href="#!email"><span class="white-text email">jdandturk@gmail.com</span></a>
-      </div>
-    </li>
-    <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
-    <li><a href="#!">Second Link</a></li>
-    <li><div class="divider"></div></li>
-    <li><a class="subheader">Subheader</a></li>
-    <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
-  </ul>
-  <a href="#" data-activates="slide-out" class="button-collapse config-btn">
-    <i class="material-icons medium">settings</i>
-  </a>
-  <style type="text/css">
-    .config-btn{
-      position: absolute;
-      top: 10px;
-      left: 10px;
-    }
-  </style>
-</template>
+<!--<template name="sidenav">-->
+  
+<!--</template>-->
 
 <template name="choseuser">
   <div class="col s12 m6 l3 select-user">
@@ -85,13 +163,64 @@
   <figure class="bg-app">
     <img class="cover" src="bg/img/{{user.bg.file}}">
   </figure>
-  {{> sidenav}}
+  <!-- SIDENAV -->
+  <ul id="slide-out" class="side-nav">
+    <li>
+      <div class="user-view">
+        <div class="background" style="background-color: {{user.prefs.mainColor}}">
+        </div>
+        <figure class="user-img">
+          <img src="img/profile/{{user.img_profile}}">
+          <figcaption class="white-text center">{{user.username}}</figcaption>
+        </figure>
+      </div>
+    </li>
+    <li><a class="aopt-bg"><i class="material-icons">photo_size_select_actual</i>Change background</a></li>
+    <li><a href="#!">Second Link</a></li>
+    <li><div class="divider"></div></li>
+    <li><a class="subheader">Subheader</a></li>
+    <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+  </ul>
+  <a href="#" data-activates="slide-out" class="spin button-collapse config-btn">
+    <i style="color:{{user.prefs.altColor}}" class="material-icons medium">settings</i>
+  </a>
+  <!-- MAIN CONTENT -->
   <div class="container">
     <a class="unset-user right">
       <i class="material-icons red-text">
         power_settings_new
       </i>
     </a>
+  </div>
+</template>
+
+<template name="bgopt">
+  <div class="container white-text opt animated slideInRight" style="background-color:{{user.prefs.mainColor}}">
+    <div class="row">
+      <h2 class="title center">Select BG</h2>
+      <div class="scroll-bg white black-text">
+        {{# each bg}}
+          <div class="col s12 m6 l3">
+            <figure class="opt-bg">
+              <img class="cover" src="bg/img/{{file}}">
+              <figcaption class="truncate">{{name}}</figcaption>
+            </figure>
+          </div>
+        {{/ each}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s6 m4 l3 offset-m2">
+        <button class="btn red white-text bgopt-cancel">
+          Cancel
+        </button>
+      </div>
+      <div class="col s6 m4 l3">
+        <button class="btn green white-text bgopt-ok">
+          Change
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
